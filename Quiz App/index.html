@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0 url('Images/Quiz_Image.webp') no-repeat center center fixed;
+            padding: 20px;
+            background-size: cover;
+            position:relative;
+
+        }
+
+        #heading {
+            font-size: 50px;
+            text-align: center;
+            color: #000;
+            margin-bottom: 60px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: azure;
+            padding: 20px;
+            border-radius: 10px;
+            position:relative;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .instructions {
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #555;
+            background: #e9f5ff;
+            padding: 10px;
+            border-left: 5px solid #007bff;
+            border-radius: 5px;
+        }
+
+        #quizBlock {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Dark mode styles for quizBlock */
+        #quizBlock.dark-mode {
+            background: #333;
+            color: #eee;
+        }
+
+        /* Option styles */
+        .option {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        /* Dark mode option styles */
+        #quizBlock.dark-mode .option {
+            border-color: #555;
+        }
+
+        .option.selected {
+            background-color: #cce5ff;
+            border-color: #007bff;
+        }
+
+        #quizBlock.dark-mode .option.selected {
+            background-color: #0056b3;
+            color: white;
+            border-color: #3399ff;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+
+        #quizBlock.dark-mode .option.correct {
+            background-color: #19692c;
+            border-color: #28a745;
+            color: #a5d6a7;
+        }
+
+        .option.wrong {
+            background-color: #ffeeba;
+            border-color: #ffc107;
+        }
+
+        #quizBlock.dark-mode .option.wrong {
+            background-color: #7a6000;
+            border-color: #ffc107;
+            color: #fff3cd;
+        }
+
+        button {
+            margin: 10px 5px 0;
+            padding: 10px 20px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: bold;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            background: #0056b3;
+        }
+
+        #score {
+            font-size: 20px;
+            margin-top: 15px;
+        }
+
+        /* Dark mode toggle button container */
+        #toggleContainer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 10px;
+            user-select: none;
+        }
+
+        /* Toggle button */
+        #toggleThemeBtn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #007bff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: color 0.3s, background-color 0.3s;
+        }
+
+        #toggleThemeBtn:hover {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="heading">QUIZZ APP</h1>
+
+    <div class="container">
+        <h1>Full Stack Quiz</h1>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <strong>Instructions:</strong> Click <em>Start Quiz</em> to begin. Navigate through questions using
+            <em>Previous</em> and
+            <em>Next</em>. Once all questions are answered, click <em>Calculate Score</em>. After scoring, you can
+            review answers or restart the quiz.
+        </div>
+
+        <!-- Dark/Light toggle outside quiz block -->
+        <div id="toggleContainer">
+            <button id="toggleThemeBtn" aria-label="Toggle Dark/Light Mode">
+                <span id="themeIcon">🌞</span> Light Mode
+            </button>
+        </div>
+
+        <!-- Quiz block -->
+        <div id="quizBlock">
+            <button onclick="startQuiz()">Start Quiz</button>
+        </div>
+
+        <div id="score"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Which of the following is not a frontend framework?",
+                options: ["React", "Vue", "Angular", "Django"],
+                correctAnswer: "Django"
+            },
+            {
+                question: "What does CRUD stand for in database operations?",
+                options: ["Create, Read, Update, Delete", "Copy, Read, Update, Delete", "Create, Remove, Update, Delete", "Create, Run, Update, Delete"],
+                correctAnswer: "Create, Read, Update, Delete"
+            },
+            {
+                question: "Which command is used to initialize a new Node.js project?",
+                options: ["node init", "npm start", "npm init", "node install"],
+                correctAnswer: "npm init"
+            },
+            {
+                question: "Which HTTP method is used to update existing data?",
+                options: ["GET", "POST", "PUT", "DELETE"],
+                correctAnswer: "PUT"
+            },
+            {
+                question: "Which database is a NoSQL database?",
+                options: ["MySQL", "PostgreSQL", "SQLite", "MongoDB"],
+                correctAnswer: "MongoDB"
+            },
+            {
+                question: "What is the purpose of useEffect in React?",
+                options: ["Handle user input", "Send HTTP requests", "Perform side effects", "Define routes"],
+                correctAnswer: "Perform side effects"
+            },
+            {
+                question: "What does JSX stand for?",
+                options: ["JavaScript XML", "Java Syntax Extension", "JSON Syntax", "Java Server Extension"],
+                correctAnswer: "JavaScript XML"
+            },
+            {
+                question: "Which hook is used to handle state in React?",
+                options: ["useEffect", "useRef", "useState", "useContext"],
+                correctAnswer: "useState"
+            },
+            {
+                question: "What is Express.js used for?",
+                options: ["Frontend styling", "Backend routing and middleware", "Database design", "React component rendering"],
+                correctAnswer: "Backend routing and middleware"
+            },
+            {
+                question: "Which of the following is used to style React components?",
+                options: ["JSX", "Node.js", "MongoDB", "Tailwind CSS"],
+                correctAnswer: "Tailwind CSS"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = Array(questions.length).fill(null);
+        let score = 0;
+        let scoreCalculated = false;
+        let reviewing = false;
+
+        const quizBlock = document.getElementById('quizBlock');
+        const scoreDiv = document.getElementById('score');
+        const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+        const themeIcon = document.getElementById('themeIcon');
+
+        // Dark mode toggle handler
+        toggleThemeBtn.addEventListener('click', () => {
+            quizBlock.classList.toggle('dark-mode');
+            const darkModeOn = quizBlock.classList.contains('dark-mode');
+            if (darkModeOn) {
+                themeIcon.textContent = '🌙';
+                toggleThemeBtn.textContent = ' Dark Mode';
+                toggleThemeBtn.prepend(themeIcon);
+            } else {
+                themeIcon.textContent = '🌞';
+                toggleThemeBtn.textContent = ' Light Mode';
+                toggleThemeBtn.prepend(themeIcon);
+            }
+        });
+
+        function startQuiz() {
+            currentQuestion = 0;
+            userAnswers = Array(questions.length).fill(null);
+            score = 0;
+            scoreCalculated = false;
+            reviewing = false;
+            scoreDiv.innerHTML = "";
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            let html = `<h2>Q${currentQuestion + 1}. ${q.question}</h2>`;
+
+            q.options.forEach(option => {
+                let cls = "";
+                if (reviewing) {
+                    if (option === q.correctAnswer) cls = "correct";
+                    else if (option === userAnswers[currentQuestion] && option !== q.correctAnswer) cls = "wrong";
+                } else if (option === userAnswers[currentQuestion]) {
+                    cls = "selected";
+                }
+
+                html += `<div class="option ${cls}" onclick="selectOption('${option}')">${option}</div>`;
+            });
+
+            html += `
+      <button onclick="prev()" ${currentQuestion === 0 ? "disabled" : ""}>Previous</button>
+      <button onclick="next()" ${currentQuestion === questions.length - 1 ? "disabled" : ""}>Next</button>
+    `;
+
+            if (!reviewing) {
+                html += `<button onclick="calculateScore()">Calculate Score</button>`;
+                html += `<button onclick="reviewAnswers()" ${scoreCalculated ? "" : "disabled"}>Review Answers</button>`;
+            }
+
+            // Restart button available anytime after starting the quiz
+            if (scoreCalculated) {
+                html += `
+        <button onclick="startQuiz()">Restart Quiz</button>
+        <button onclick="endQuiz()">End Quiz</button>
+    `;
+            }
+
+            quizBlock.innerHTML = html;
+        }
+
+        function endQuiz() {
+            quizBlock.innerHTML = `
+        <button onclick="startQuiz()">Start Quiz</button>
+    `;
+            scoreDiv.innerHTML = ""; // Clear the score
+        }
+
+        function selectOption(option) {
+            if (reviewing) return;
+            userAnswers[currentQuestion] = option;
+            renderQuestion();
+        }
+
+        function prev() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function next() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            }
+        }
+
+        function calculateScore() {
+            if (scoreCalculated) return;
+            score = 0;
+            questions.forEach((q, i) => {
+                if (userAnswers[i] === q.correctAnswer) {
+                    score += 10;
+                }
+            });
+            alert("Score Calculated!");
+            scoreDiv.innerHTML = `Your Score: ${score}/100`;
+            scoreCalculated = true;
+            renderQuestion();
+        }
+
+        function reviewAnswers() {
+            if (!scoreCalculated) return;
+            reviewing = true;
+            currentQuestion = 0;
+            renderQuestion();
+        }
+    </script>
+</body>
+
+</html>
