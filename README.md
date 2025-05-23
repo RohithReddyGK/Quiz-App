@@ -78,10 +78,10 @@ Quiz App/
 ## 📸 Screenshots
 
 ### 1️⃣ Quiz App
-<img src="https://github.com/user-attachments/assets/78727e7e-64ce-40fe-9f0c-23704a9b9cf5" alt="Quiz App" width="700" height="450"/>
+<img src="https://github.com/user-attachments/assets/78727e7e-64ce-40fe-9f0c-23704a9b9cf5" alt="Quiz App" width="750" height="450"/>
 
 ### 2️⃣ Start Quiz with Dark Mode Enabled
-<img src="https://github.com/user-attachments/assets/f3a5cfa4-af0d-4be5-95a9-bbc4fb3ef92c" alt="Start Quiz with Dark Mode" width="700" height="450"/>
+<img src="https://github.com/user-attachments/assets/f3a5cfa4-af0d-4be5-95a9-bbc4fb3ef92c" alt="Start Quiz with Dark Mode" width="750" height="450"/>
 
 ---
 
